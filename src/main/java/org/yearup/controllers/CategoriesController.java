@@ -2,6 +2,7 @@ package org.yearup.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.events.Event;
 import org.yearup.data.CategoryDao;
@@ -14,11 +15,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/Categories")
 @CrossOrigin
-
-// add the annotations to make this a REST controller
-// add the annotation to make this controller the endpoint for the following url
-    // http://localhost:8080/categories
-// add annotation to allow cross site origin requests
 public class CategoriesController {
     private CategoryDao categoryDao;
     private ProductDao productDao;
@@ -43,7 +39,7 @@ public class CategoriesController {
 
     // the url to return all products in category 1 would look like this
     // https://localhost:8080/categories/1/products
-    @GetMapping("/{categoryId}/products")
+    @GetMapping("/categories/1/products")
     public List<Product> getProductsById(@PathVariable int categoryId) {
 
         return productDao.getProductsById(categoryId);
@@ -51,19 +47,21 @@ public class CategoriesController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Category addCategory(@RequestBody Category category) {
 
         return categoryDao.create(category);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     // add annotation to ensure that only an ADMIN can call this function
     public void updateCategory(@PathVariable int id, @RequestBody Category category) {
         categoryDao.update(id, category);
     }
 
     @DeleteMapping
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     // add annotation to ensure that only an ADMIN can call this function
     public void deleteCategory(@PathVariable int id) {
         categoryDao.delete(id);

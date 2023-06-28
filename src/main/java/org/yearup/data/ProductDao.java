@@ -15,4 +15,6 @@ public interface ProductDao
     void delete(int productId);
 
     List<Product> getProductsById(int categoryId);
+
+    Product getProductById(int productId);
 }

@@ -5,37 +5,60 @@ import org.yearup.data.CategoryDao;
 import org.yearup.models.Category;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 @Component
 public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
 {
+    private Connection connection;
+
     public MySqlCategoryDao(DataSource dataSource)
     {
         super(dataSource);
     }
 
     @Override
-    public List<Category> getAllCategories()
-    {
-        // get all categories
+public void getAllCategories() {
+    String getAllCategoriesQuery = "SELECT * FROM categories";
+    try (PreparedStatement statement = connection.prepareStatement(getAllCategoriesQuery)) {
+        ResultSet resultSet = statement.executeQuery();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+}
+
+    @Override
+    public Category getById(int categoryId){
+        int categoryId = 1;
+        String getCategoryByIdQuery = "SELECT * FROM categories WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(getCategoryByIdQuery)) {
+            statement.setInt(1, categoryId);
+            ResultSet resultSet = statement.executeQuery();
+            // Process the result set
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
-    @Override
-    public Category getById(int categoryId)
-    {
-        // get category by id
-        return null;
-    }
 
-    @Override
+        @Override
     public Category create(Category category)
     {
-        // create a new category
-        return null;
+        {
+            String categoryName = "New Category";
+            String createCategoryQuery = "INSERT INTO categories (name) VALUES (?)";
+            try (PreparedStatement statement = connection.prepareStatement(createCategoryQuery)) {
+                statement.setString(1, categoryName);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            return null;}
     }
 
     @Override

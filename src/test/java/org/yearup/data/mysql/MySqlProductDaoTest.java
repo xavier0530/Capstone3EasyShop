@@ -17,7 +17,12 @@ class MySqlProductDaoTest extends BaseDaoTestClass
     @BeforeEach
     public void setup()
     {
-        dao = new MySqlProductDao(dataSource);
+        dao = new MySqlProductDao(dataSource) {
+            @Override
+            public Product getProductById(int productId) {
+                return null;
+            }
+        };
     }
 
     @Test
